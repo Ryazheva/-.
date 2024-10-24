@@ -30,7 +30,7 @@ print("Введите последовательность чисел:")
 numbers = list(map(int, input().strip().split()))
 
 # Сортируем список методом "расческой"
-sorted_numbers = comb_sort(numbers)
+comb_sort(numbers)
 
 # Выводим отсортированный список, объединив элементы пробелом
-print(' '.join(map(str, sorted_numbers)))
+print(' '.join(map(str, numbers)))
