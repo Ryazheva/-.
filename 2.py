@@ -1,82 +1,127 @@
-def calculate(expression): # РџСЂРѕСЃС‚Рѕ РїРµСЂРµРґР°С‘С‚СЃСЏ СЃР°РјРѕ РІС‹СЂР°Р¶РµРЅРёРµ, РІРѕР·РІСЂР°С‰Р°РµС‚ СЂРµР·СѓР»СЊС‚Р°С‚ РёР»Рё РѕС€РёР±РєСѓ РІ РІРёРґРµ СЃС‚СЂРѕРєРё
+# Функция для вычисления выражения
+def calculate(expression):
+    # Пробуем вычислить выражение
     try:
-        return str(evaluate_expression(expression)) # Р’С‹С‡РёСЃР»РµРЅРёСЏ
+        # Возвращаем результат вычислений в виде строки
+        return str(evaluate_expression(expression))
+        # Если возникает ошибка, возвращаем сообщение об ошибке
     except Exception as e:
-        return f"Error: {e}" # РћС‚Р»РѕРІ РѕС€РёР±РѕРє!
+        return f"Error: {e}"
 
 
+# Функция для оценки выражения
 def evaluate_expression(expression):
-    tokens = tokenize(expression) # Р Р°Р·Р±РёСЂР°РµС‚ РІС‹СЂР°Р¶РµРЅРёРµ РїРѕ "Р—Р°РїС‡Р°СЃС‚СЏРј"
-    postfix = infix_to_postfix(tokens) # РџСЂРµРѕР±СЂР°Р·СѓРµС‚ РІ РїРѕСЃС‚С„РёРєСЃРЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ (РЅРµ С‚СЂРµР±СѓРµС‚ РѕРїСЂРµРґРµР»РµРЅРёСЏ С‡РµСЂРµРґС‹ РїРѕРґСЃС‡С‘С‚РѕРІ, РѕР±СЂР°С‚РЅР°СЏ РїРѕР»СЊСЃРєР°СЏ РЅРѕС‚Р°С†РёСЏ)
-    return evaluate_postfix(postfix) # РџСЂРѕСЃС‚Рѕ СЃС‡РёС‚Р°РµС‚ РїРѕР»СѓС‡РµРЅРЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ
+    # Разбиваем выражение на токены
+    tokens = tokenize(expression)
+    # Преобразуем инфиксную запись в постфиксную
+    postfix = infix_to_postfix(tokens)
+    # Вычисляем значение выражения в постфиксной записи
+    return evaluate_postfix(postfix)
 
 
+# Функция для разбиения выражения на токены
 def tokenize(expression):
+    # Создаем пустой список для хранения токенов
     tokens = []
+    # Переменная для временного хранения текущего токена
     current_token = ""
+    # Проходимся по каждому символу в выражении
     for char in expression:
+        # Проверяем, является ли текущий символ цифрой или точкой
         if char.isdigit() or char == '.':
+            # Добавляем символ к текущему токену
             current_token += char
         else:
+            # Если текущий токен не пуст, добавляем его в список токенов
             if current_token:
                 tokens.append(current_token)
+                # Сбрасываем текущий токен
                 current_token = ""
+            # Если текущий символ не пробел, добавляем его в список токенов
             if char != ' ':
                 tokens.append(char)
+    # Если после цикла остался непустой токен, добавляем его в список токенов
     if current_token:
         tokens.append(current_token)
+    # Возвращаем список токенов
     return tokens
 
 
+# Функция для преобразования инфиксного выражения в постфиксное
 def infix_to_postfix(tokens):
+    # Создаем пустой список для хранения результата
     output = []
+    # Создаем стек для операций
     stack = []
-    precedence = {"+": 1, "-": 1, "*": 2, "/": 2} # РЎР»РѕРІР°СЂСЊ РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ РѕРїРµСЂР°С‚РѕСЂРѕРІ (РєС‚Рѕ СЃС‚Р°СЂС€Рµ))
+    # Устанавливаем приоритет операций
+    precedence = {"+": 1, "-": 1, "*": 2, "/": 2}
 
+    # Проходимся по каждому токену
     for token in tokens:
-        if token.replace('.', '', 1).isdigit():  # Р•СЃР»Рё СЌС‚Рѕ С‡РёСЃР»Рѕ
+        # Если токен - число, добавляем его в выходной список
+        if token.replace('.', '', 1).isdigit():
             output.append(token)
+        # Если токен - открывающая скобка, помещаем её в стек
         elif token == '(':
             stack.append(token)
+        # Если токен - закрывающая скобка, выталкиваем все операции до первой открытой скобки
         elif token == ')':
             while stack and stack[-1] != '(':
                 output.append(stack.pop())
+            # Убираем открытую скобку из стека
             stack.pop()
+        # Для всех остальных символов (операций)
         else:
+            # Пока стек не пуст и последний элемент стека имеет больший или равный приоритет,
+            # чем текущий токен, выталкиваем элементы из стека в выходной список
             while stack and stack[-1] != '(' and precedence[token] <= precedence[stack[-1]]:
                 output.append(stack.pop())
+            # Помещаем операцию в стек
             stack.append(token)
 
+    # Выталкиваем оставшиеся элементы из стека в выходной список
     while stack:
         output.append(stack.pop())
 
+    # Возвращаем преобразованное выражение
     return output
 
 
+# Функция для вычисления значения выражения в постфиксной форме
 def evaluate_postfix(tokens):
+    # Создаем стек для хранения промежуточных результатов
     stack = []
+    # Проходимся по каждому токену
     for token in tokens:
+        # Если токен - число, конвертируем его в float и помещаем в стек
         if token.replace('.', '', 1).isdigit():
             stack.append(float(token))
         else:
+            # Извлекаем два последних числа из стека
             operand2 = stack.pop()
             operand1 = stack.pop()
+            # Выполняем соответствующую операцию и помещаем результат обратно в стек
             if token == '+':
                 stack.append(operand1 + operand2)
             elif token == '-':
                 stack.append(operand1 - operand2)
             elif token == '*':
                 stack.append(operand1 * operand2)
+
             elif token == '/':
                 stack.append(operand1 / operand2)
+            # Возвращаем итоговый результат
     return stack.pop()
 
-
-expression = input("Р’РІРµРґРёС‚Рµ РІС‹СЂР°Р¶РµРЅРёРµ: ")
+# Запрашиваем у пользователя ввод выражения
+expression = input("Введите выражение: ")
+# Вычисляем результат
 result = calculate(expression)
-if(result[-4:] == "zero"):
-    print("Р Р°Р·РґРµР»РёС‚СЊ РЅР° РЅРѕР»СЊ РЅРµР»СЊР·СЏ")
-elif(result[:5] == "Error"):
-    print("РќРµРєРѕСЂСЂРµРєС‚РЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ")
+# Обрабатываем возможные ошибки и выводим результат
+if result[-4:] == "zero":
+    print("Разделить на ноль нельзя")
+elif result[:5] == "Error":
+    print("Некорректное выражение")
 else:
-    print(f"Р РµР·СѓР»СЊС‚Р°С‚: {result}")
+    print(f"Результат: {result}")
+
