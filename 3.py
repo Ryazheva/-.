@@ -1,37 +1,25 @@
-import math
+def find_numbers(x):
+    """
+    Функция находит все уникальные положительные числа, которые могут быть представлены в виде произведения степеней чисел 3, 5 и 7, не превышающие заданное число x.
+    :param x: Верхняя граница поиска чисел.
+    :return: Список найденных чисел.
+    """
+    results = []  # Инициализация списка для хранения результатов
 
-def get_index_from_x(num, x):
-    parameter = 0
-    while math.pow(num, parameter) <= x:
-        parameter += 1
-    return parameter
+    for k in range(0, x + 1):  # Перебирает степени числа 3 (3^k)
+        for l in range(0, x + 1):  # Перебирает степени числа 5 (5^l)
+            for m in range(0, x + 1):  # Перебирает степени числа 7 (7^m)
+                number = (3 ** k) * (5 ** l) * (7 ** m)  # Вычисление числа как произведение степеней 3, 5 и 7
 
-def print_all_satisfying_nums(k_num, l_num, m_num, x):
-    k_index = get_index_from_x(k_num, x)
-    l_index = get_index_from_x(l_num, x)
-    m_index = get_index_from_x(m_num, x)
+                if number <= x and number > 0:  # Проверяет, чтобы число было положительным и не превышало x
+                    if number not in results:  # Проверяет уникальность числа
+                        results.append(number)  # Добавляет уникальное число в список результатов
 
-    unique_nums = set()
+    return results  # Возвращает список уникальных положительных чисел, удовлетворяющих условию
 
-    for k_idx in range(k_index):
-        for l_idx in range(l_index):
-            for m_idx in range(m_index):
-                num = (int(math.pow(k_num, k_idx)) +
-                        int(math.pow(l_num, l_idx)) +
-                        int(math.pow(m_num, m_idx)))
-                if num <= x:
-                    unique_nums.add(num)
-
-    for num in sorted(unique_nums):
-        print(num, end=" ")
-
-def main():
-    x = int(input("Введите x: "))
-    k_num = 3
-    l_num = 5
-    m_num = 7
-
-    print_all_satisfying_nums(k_num, l_num, m_num, x)
 
 if __name__ == "__main__":
-    main()
+    x = int(input("Введите число x: "))  # Получение ввода от пользователя
+    valid_numbers = find_numbers(x)  # Вызов функции для нахождения чисел
+    print("Числа от 1 до", x, "в виде 3^K * 5^L * 7^M:", valid_numbers)  # Вывод результатов
+    print_all_satisfying_nums(k_num, l_num, m_num, x)
