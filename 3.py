@@ -22,4 +22,4 @@ if __name__ == "__main__":
     x = int(input("Введите число x: "))  # Получение ввода от пользователя
     valid_numbers = find_numbers(x)  # Вызов функции для нахождения чисел
     print("Числа от 1 до", x, "в виде 3^K * 5^L * 7^M:", valid_numbers)  # Вывод результатов
-    print_all_satisfying_nums(k_num, l_num, m_num, x)
+
